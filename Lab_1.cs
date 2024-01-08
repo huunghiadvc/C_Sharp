@@ -46,69 +46,40 @@ namespace Lab1
 
         public static Boolean DateValid(string[] strArr)
         {
-            int DateInt, MonthInt, YearInt;
-
-            // Convert string sang date, month, year theo kiểu int
-            MonthInt = Convert.ToInt32(strArr[1]);
-            if (strArr[0].Length == 2)
+            if (strArr.Length != 3)
             {
-                DateInt = Convert.ToInt32(strArr[0]);
-                YearInt = Convert.ToInt32(strArr[2]);
-            }
-            else
-            {
-                DateInt = Convert.ToInt32(strArr[2]);
-                YearInt = Convert.ToInt32(strArr[0]);
-            }
-
-            // validate năm sinh
-            if (YearInt > DateTime.Now.Year || YearInt < 0)
-            {
-                Console.WriteLine("Invalid year: " + YearInt);
+                Console.WriteLine("Invalid date format. Please provide day, month, and year.");
                 return false;
             }
 
-            // lấy số ngày tháng 2
-            int DayOfFeb = 28;
-            if (MonthInt == 2 && DateTime.IsLeapYear(YearInt))
+            if (!int.TryParse(strArr[0], out int date) ||
+                !int.TryParse(strArr[1], out int month) ||
+                !int.TryParse(strArr[2], out int year))
             {
-                DayOfFeb = 29;
+                Console.WriteLine("Invalid date format. Please provide valid numbers for day, month, and year.");
+                return false;
             }
 
-            // validate tháng và số ngày trong tháng
-            switch (MonthInt)
+            if (year < 0)
             {
-                case 1:
-                case 3:
-                case 5:
-                case 7:
-                case 8:
-                case 10:
-                case 12:
-                    if (DateInt < 1 || DateInt > 31)
-                    {
-                        Console.WriteLine("Invalid date: " + DateInt + "of month " + MonthInt);
-                        return false;
-                    }
-                    break;
-                case 4:
-                case 6:
-                case 9:
-                case 11:
-                    if (DateInt < 1 || DateInt > 30)
-                    {
-                        Console.WriteLine("Invalid date: " + DateInt + "of month " + MonthInt);
-                        return false;
-                    }
-                    break;
-                case 2:
-                    if (DateInt < 1 || DateInt > DayOfFeb)
-                    {
-                        Console.WriteLine("Invalid date: " + DateInt + "of month " + MonthInt);
-                        return false;
-                    }
-                    break;
+                Console.WriteLine("Invalid year: " + year);
+                return false;
             }
+
+            if (month < 1 || month > 12)
+            {
+                Console.WriteLine("Invalid month: " + month);
+                return false;
+            }
+
+            int daysInMonth = DateTime.DaysInMonth(year, month);
+
+            if (date < 1 || date > daysInMonth)
+            {
+                Console.WriteLine($"Invalid date: {date} of month {month}");
+                return false;
+            }
+
             return true;
         }
 
