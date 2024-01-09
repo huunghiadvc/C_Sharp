@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -6,31 +7,47 @@ namespace Lab1
 {
     class Program
     {
-        static void Main(string[] args)
+        static string[] CloneData()
         {
-            string str = "1997/1/06";
-
-            string[] strArr = Utils.SplitString(str);
-
-            // Trường hợp sai format ngày, tháng, năm
-            if (strArr.Length != 3)
+            string[] strArr = new string[10000];
+            for (int i = 0; i < 10000; i++)
             {
-                Console.WriteLine("Invalid date");
-                return;
+                strArr[i] = "2024/02/29";
             }
-
-            // validate ngày tháng năm
-            if (!Utils.DateValid(strArr))
-            {
-                return;
-            }
-
-            string dateOfBirth = string.Join("", strArr);
-
-            int sum = Utils.GetSumOfBirthDay(dateOfBirth);
-
-            Result.ShowResult(sum);
+            return strArr;
         }
+        // static void Main(string[] args)
+        // {
+        //     Stopwatch stopwatch = Stopwatch.StartNew();
+        //     string[] str = CloneData();
+
+        //     for (int i = 0; i < 10000; i++)
+        //     {
+        //         string[] strArr = Utils.SplitString(str[i]);
+
+        //         // Trường hợp sai format ngày, tháng, năm
+        //         if (strArr.Length != 3)
+        //         {
+        //             Console.WriteLine("Invalid date");
+        //             return;
+        //         }
+
+        //         // validate ngày tháng năm
+        //         if (!Utils.DateValid(strArr))
+        //         {
+        //             return;
+        //         }
+
+        //         string dateOfBirth = string.Join("", strArr);
+
+        //         int sum = Utils.GetSumOfBirthDay(dateOfBirth);
+
+        //         Result.ShowResult(sum);
+        //     }
+
+        //     stopwatch.Stop();
+        //     TimeSpan elapsedTime = stopwatch.Elapsed;
+        // }
     }
     class Utils
     {
@@ -46,19 +63,31 @@ namespace Lab1
 
         public static Boolean DateValid(string[] strArr)
         {
-            if (strArr.Length != 3)
+
+            int year, date;
+            int month = Convert.ToInt32(strArr[1]);
+
+            if (strArr[0].Length == 4)
             {
-                Console.WriteLine("Invalid date format. Please provide day, month, and year.");
-                return false;
+                year = Convert.ToInt32(strArr[0]);
+                date = Convert.ToInt32(strArr[2]);
+            }
+            else
+            {
+                year = Convert.ToInt32(strArr[2]);
+                date = Convert.ToInt32(strArr[0]);
             }
 
-            if (!int.TryParse(strArr[0], out int date) ||
-                !int.TryParse(strArr[1], out int month) ||
-                !int.TryParse(strArr[2], out int year))
+            int daysInMonth;
+            if (month == 2 && DateTime.IsLeapYear(year))
             {
-                Console.WriteLine("Invalid date format. Please provide valid numbers for day, month, and year.");
-                return false;
+                daysInMonth = 29;
             }
+            else
+            {
+                daysInMonth = DateTime.DaysInMonth(year, month);
+            }
+
 
             if (year < 0)
             {
@@ -71,8 +100,6 @@ namespace Lab1
                 Console.WriteLine("Invalid month: " + month);
                 return false;
             }
-
-            int daysInMonth = DateTime.DaysInMonth(year, month);
 
             if (date < 1 || date > daysInMonth)
             {
